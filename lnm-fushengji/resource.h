@@ -66,6 +66,7 @@
 #define IDC_BUTTON_MTZL                 1035
 #define IDC_BUTTON_FILE                 1035
 #define IDC_LEFT                        1035
+#define IDC_CANCEL                      1035
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -84,7 +85,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1035
+#define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

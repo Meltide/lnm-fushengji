@@ -28,4 +28,8 @@ protected:
 	CSpinButtonCtrl m_spin;
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnDeltaposSpin(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnBnClickedCancel();
+	afx_msg void OnBnClickedOk();
 };

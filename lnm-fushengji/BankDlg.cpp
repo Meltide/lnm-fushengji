@@ -5,6 +5,7 @@
 #include "lnm-fushengji.h"
 #include "afxdialogex.h"
 #include "BankDlg.h"
+#include "BankJyDlg.h"
 
 
 // BankDlg 对话框
@@ -49,11 +50,15 @@ END_MESSAGE_MAP()
 void BankDlg::OnBnClickedSave()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	BankJyDlg bankJyDlg(nullptr, m_main, true);
+	if (bankJyDlg.DoModal() == IDOK) CDialogEx::OnOK();
 }
 
 void BankDlg::OnBnClickedGet()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	BankJyDlg bankJyDlg(nullptr, m_main, false);
+	if (bankJyDlg.DoModal() == IDOK) CDialogEx::OnOK();
 }
 
 void BankDlg::OnBnClickedLeft()

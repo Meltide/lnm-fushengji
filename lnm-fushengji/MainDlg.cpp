@@ -284,9 +284,13 @@ void MainDlg::NextDay()
 	if (debt > 0)
 	{
 		debt *= 1.1; // 债务增加10%
-		CString strDebt;
-		strDebt.Format(L"%ld", debt);
-		m_debt.SetWindowText(strDebt); // 更新债务显示
+		FlushDisplay();
+	}
+
+	if (inBank > 0)
+	{
+		inBank += 10;
+		FlushDisplay();
 	}
 
 	if (leftDay >= 40) // 检查是否达到游戏结束条件
@@ -386,6 +390,8 @@ void MainDlg::OnBnClickedButtonBank()
 	// TODO: 在此添加控件通知处理程序代码
 	BankDlg bankDlg(nullptr, this);
 	bankDlg.DoModal();
+
+	FlushDisplay();
 }
 
 void MainDlg::OnBnClickedButtonWangba()
