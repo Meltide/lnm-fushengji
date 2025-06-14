@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="BankDlg.h" />
+    <ClInclude Include="BankJyDlg.h" />
     <ClInclude Include="BossComeDlg.h" />
     <ClInclude Include="DiaryDlg.h" />
     <ClInclude Include="framework.h" />
@@ -200,6 +201,7 @@
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="BankDlg.cpp" />
+    <ClCompile Include="BankJyDlg.cpp" />
     <ClCompile Include="BossComeDlg.cpp" />
     <ClCompile Include="DiaryDlg.cpp" />
     <ClCompile Include="lnm-fushengji.cpp" />

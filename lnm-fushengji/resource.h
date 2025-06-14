@@ -18,7 +18,6 @@
 #define IDD_NEWS                        143
 #define IDB_NEWS                        145
 #define IDD_BANK                        146
-#define IDD_DIALOG1                     148
 #define IDD_BANK_JY                     148
 #define IDC_LOAD                        1000
 #define IDC_BUTTON1                     1001
@@ -54,12 +53,15 @@
 #define IDC_BUTTON_YGZS                 1032
 #define IDC_CHECK                       1032
 #define IDC_BUTTON_CODE                 1032
+#define IDC_MONEY                       1032
 #define IDC_BUTTON_HMG                  1033
 #define IDC_SAVE                        1033
 #define IDC_BUTTON_GALAXY               1033
+#define IDC_OK2                         1033
 #define IDC_BUTTON_YYT                  1034
 #define IDC_BUTTON_MINHOME              1034
 #define IDC_GET                         1034
+#define IDC_SPIN                        1034
 #define IDC_BUTTON12                    1035
 #define IDC_BUTTON_MTZL                 1035
 #define IDC_BUTTON_FILE                 1035
@@ -82,7 +84,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
