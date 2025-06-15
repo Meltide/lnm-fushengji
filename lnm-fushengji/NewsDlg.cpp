@@ -41,3 +41,4 @@ END_MESSAGE_MAP()
 
 
 // NewsDlg 消息处理程序
+

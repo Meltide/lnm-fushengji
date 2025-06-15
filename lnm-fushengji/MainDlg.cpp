@@ -2,9 +2,11 @@
 //
 
 #include "pch.h"
+#include "utils.h"
 #include "lnm-fushengji.h"
 #include "afxdialogex.h"
 #include "MainDlg.h"
+
 #include "BankDlg.h"
 #include "WangbaDlg.h"
 #include "DiaryDlg.h"
@@ -84,33 +86,46 @@ BOOL MainDlg::OnInitDialog()
 	title.Format(L"牢黏猫浮生 (%u/40天)", leftDay);
 	SetWindowText(title);
 
+	// 获取图片控件
+	CStatic* pPictureControl = (CStatic*)GetDlgItem(IDC_SUBWAY); // 替换为你的图片控件 ID
+	if (pPictureControl)
+	{
+		// 获取控件的当前大小
+		CRect rect;
+		pPictureControl->GetWindowRect(&rect);
+		ScreenToClient(&rect);
+
+		// 根据 DPI 调整大小，并加入缩放因子
+		float scaleFactor = 0.5f; // 缩放因子，值越小图片越小
+		int adjustedWidth = static_cast<int>(GetDpiAdjustedSize(rect.Width(), this->GetSafeHwnd()) * scaleFactor);
+		int adjustedHeight = static_cast<int>(GetDpiAdjustedSize(rect.Height(), this->GetSafeHwnd()) * scaleFactor);
+
+		// 设置控件的新大小
+		pPictureControl->SetWindowPos(nullptr, rect.left, rect.top, adjustedWidth, adjustedHeight, SWP_NOZORDER | SWP_NOMOVE);
+	}
+
 	// 设置市场列表控件样式
-	m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES); // 启用完整行选择和网格线
-	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, 100);
-	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, 100);
+	m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
+	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, 150);
+	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, 150);
 
 	// 初始化黑市货品
 	GenGoods();
 
-	// 自动调整列宽以适应内容
-	m_market.SetColumnWidth(0, 200);
-	m_market.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
-
 	// 设置出租屋列表控件样式
-	m_coat.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES); // 启用完整行选择和网格线
-	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, 100);
+	m_coat.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
+	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, 150);
 	CString coatTitle;
 	coatTitle.Format(L"买进价格 %u/%u", total, coat);
-	m_coat.InsertColumn(1, coatTitle, LVCFMT_LEFT, 100);
+	m_coat.InsertColumn(1, coatTitle, LVCFMT_LEFT, 999);
 
-	// 自动调整列宽以适应内容
-	m_coat.SetColumnWidth(0, 200);
-	m_coat.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+	// 动态调整字体大小
+	int dpiAdjustedFontHeight = GetDpiAdjustedFontHeight(28, this->GetSafeHwnd());
 
 	// 创建自定义字体
 	LOGFONT lf = { 0 };
-	lf.lfHeight = 50; // 字体大小（像素）
-	lf.lfWeight = FW_BOLD; // 粗体
+	lf.lfHeight = dpiAdjustedFontHeight; // 根据 DPI 调整字体高度
+	lf.lfWeight = FW_BOLD;              // 粗体
 	wcscpy_s(lf.lfFaceName, L"微软雅黑"); // 字体名称
 	m_fontBold.CreateFontIndirect(&lf);
 
@@ -228,16 +243,28 @@ void MainDlg::FlushBtn()
 	m_galaxy.EnableWindow(TRUE);
 	m_file.EnableWindow(TRUE);
 
-	m_iceHome.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_mcpeCity.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_danCity.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_meltCity.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_minCity.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_furryCs.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_code.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_minHome.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_galaxy.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
-	m_file.ModifyStyleEx(WS_EX_CLIENTEDGE, 0, SWP_DRAWFRAME);
+	m_iceHome.SetState(FALSE);
+	m_mcpeCity.SetState(FALSE);
+	m_danCity.SetState(FALSE);
+	m_meltCity.SetState(FALSE);
+	m_minCity.SetState(FALSE);
+	m_furryCs.SetState(FALSE);
+	m_code.SetState(FALSE);
+	m_minHome.SetState(FALSE);
+	m_galaxy.SetState(FALSE);
+	m_file.SetState(FALSE);
+}
+
+void MainDlg::Clicked(CButton& btn)
+{
+	FlushBtn();
+	btn.EnableWindow(FALSE);
+	btn.SetState(TRUE);
+
+	// 将焦点设置到其他控件，避免显示焦点边框
+	GetDlgItem(IDC_STATIC)->SetFocus();
+
+	btn.Invalidate();
 }
 
 void MainDlg::FlushDisplay()
@@ -261,14 +288,6 @@ void MainDlg::FlushDisplay()
 	CString strFame;
 	strFame.Format(L"%ld", fame);
 	m_fame.SetWindowText(strFame); // 更新名声值显示
-}
-
-void MainDlg::Clicked(CButton& btn)
-{
-	FlushBtn();
-	btn.EnableWindow(FALSE);
-	btn.ModifyStyleEx(0, WS_EX_CLIENTEDGE, SWP_DRAWFRAME);
-	btn.Invalidate();
 }
 
 void MainDlg::NextDay()

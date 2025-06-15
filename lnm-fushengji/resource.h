@@ -15,10 +15,11 @@
 #define IDB_DIARY                       138
 #define IDD_WANGBA                      140
 #define IDD_BOSS_COME                   142
-#define IDD_NEWS                        143
 #define IDB_NEWS                        145
 #define IDD_BANK                        146
 #define IDD_BANK_JY                     148
+#define IDD_DIARY1                      149
+#define IDD_NEWS                        149
 #define IDC_LOAD                        1000
 #define IDC_BUTTON1                     1001
 #define IDC_TITLE                       1002
@@ -67,6 +68,7 @@
 #define IDC_BUTTON_FILE                 1035
 #define IDC_LEFT                        1035
 #define IDC_CANCEL                      1035
+#define IDC_SUBWAY                      1036
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -85,7 +87,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1036
+#define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

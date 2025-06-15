@@ -3,11 +3,12 @@
 
 #include "pch.h"
 #include "framework.h"
+#include "utils.h"
 #include "lnm-fushengji.h"
 #include "lnm-fushengjiDlg.h"
+
 #include "MainDlg.h"
 #include "afxdialogex.h"
-#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -79,11 +80,9 @@ BOOL ClnmfushengjiDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-
-	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
-	//  执行此操作
-	SetIcon(m_hIcon, TRUE);			// 设置大图标
-	SetIcon(m_hIcon, FALSE);		// 设置小图标
+	// 设置此对话框的图标
+	SetIcon(m_hIcon, TRUE);  // 设置大图标
+	SetIcon(m_hIcon, FALSE); // 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
 	if (!m_story)
@@ -111,23 +110,27 @@ BOOL ClnmfushengjiDlg::OnInitDialog()
 		SetDlgItemText(IDC_BUTTON1, L"继续游戏");
 	}
 
+	// 动态调整字体大小
+	int dpiAdjustedTitleHeight = GetDpiAdjustedFontHeight(25, this->GetSafeHwnd());
+	int dpiAdjustedLoadHeight = GetDpiAdjustedFontHeight(20, this->GetSafeHwnd());
+
 	// 设置 IDC_TITLE 字体
 	LOGFONT lfTitle = { 0 };
-	lfTitle.lfHeight = 40; // 字体高度（像素）
-	lfTitle.lfWeight = FW_BOLD; // 粗体
+	lfTitle.lfHeight = dpiAdjustedTitleHeight; // 根据 DPI 调整字体高度
+	lfTitle.lfWeight = FW_BOLD;               // 粗体
 	wcscpy_s(lfTitle.lfFaceName, L"微软雅黑");
 	m_fontTitle.CreateFontIndirect(&lfTitle);
 	GetDlgItem(IDC_TITLE)->SetFont(&m_fontTitle);
 
-	// 设置 IDC_LOAD 字体为粗体，字号可自定义
+	// 设置 IDC_LOAD 字体
 	LOGFONT lfLoad = { 0 };
-	lfLoad.lfHeight = 35; // 字体高度（像素）
-	lfLoad.lfWeight = FW_BOLD; // 粗体
+	lfLoad.lfHeight = dpiAdjustedLoadHeight; // 根据 DPI 调整字体高度
+	lfLoad.lfWeight = FW_BOLD;              // 粗体
 	wcscpy_s(lfLoad.lfFaceName, L"微软雅黑");
 	m_fontLoad.CreateFontIndirect(&lfLoad);
 	GetDlgItem(IDC_LOAD)->SetFont(&m_fontLoad);
 
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+	return TRUE; // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void ClnmfushengjiDlg::OnSysCommand(UINT nID, LPARAM lParam)

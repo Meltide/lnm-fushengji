@@ -40,8 +40,8 @@ protected:
 	HBRUSH MainDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	void MainDlg::GenGoods();
 	void MainDlg::FlushBtn();
+	void MainDlg::Clicked(CButton& btn);
 	void FlushDisplay();
-    void MainDlg::Clicked(CButton& btn);
 	void MainDlg::NextDay();
 	void MainDlg::EndGame();
 
