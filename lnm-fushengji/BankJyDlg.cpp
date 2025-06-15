@@ -103,11 +103,27 @@ void BankJyDlg::OnBnClickedOk()
 
 	if (m_mode)
 	{
+		if (!(varCash >= 0 && varCash <= m_main->cash))
+		{
+			CString msg;
+			msg.Format(L"请输入0到%ld之间的整数", m_main->cash);
+			MessageBox(msg, L"提示", MB_ICONINFORMATION);
+			return;
+		}
+
 		m_main->cash -= varCash;
 		m_main->inBank += varCash;
 	}
 	else
 	{
+		if (!(varCash >= 0 && varCash <= m_main->inBank))
+		{
+			CString msg;
+			msg.Format(L"请输入0到%ld之间的整数", m_main->inBank);
+			MessageBox(msg, L"提示", MB_ICONINFORMATION);
+			return;
+		}
+
 		m_main->cash += varCash;
 		m_main->inBank -= varCash;
 	}

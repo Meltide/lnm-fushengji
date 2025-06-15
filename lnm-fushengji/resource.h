@@ -20,6 +20,9 @@
 #define IDD_BANK_JY                     148
 #define IDD_DIARY1                      149
 #define IDD_NEWS                        149
+#define IDD_POST                        150
+#define IDI_HOSPITAL                    152
+#define IDD_HOSPITAL                    153
 #define IDC_LOAD                        1000
 #define IDC_BUTTON1                     1001
 #define IDC_TITLE                       1002
@@ -69,6 +72,12 @@
 #define IDC_LEFT                        1035
 #define IDC_CANCEL                      1035
 #define IDC_SUBWAY                      1036
+#define IDC_DIARY                       1037
+#define IDC_NEWS                        1038
+#define IDC_BACK                        1039
+#define IDC_MSG                         1041
+#define IDC_STATIC_COAT                 1042
+#define IDC_POINT                       1043
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -85,9 +94,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        150
+#define _APS_NEXT_RESOURCE_VALUE        155
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1046
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

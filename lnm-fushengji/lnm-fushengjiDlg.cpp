@@ -112,7 +112,7 @@ BOOL ClnmfushengjiDlg::OnInitDialog()
 
 	// 动态调整字体大小
 	int dpiAdjustedTitleHeight = GetDpiAdjustedFontHeight(25, this->GetSafeHwnd());
-	int dpiAdjustedLoadHeight = GetDpiAdjustedFontHeight(20, this->GetSafeHwnd());
+	int dpiAdjustedLoadHeight = GetDpiAdjustedFontHeight(18, this->GetSafeHwnd());
 
 	// 设置 IDC_TITLE 字体
 	LOGFONT lfTitle = { 0 };

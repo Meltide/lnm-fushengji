@@ -8,6 +8,8 @@
 #include "MainDlg.h"
 
 #include "BankDlg.h"
+#include "PostDlg.h"
+#include "HospitalDlg.h"
 #include "WangbaDlg.h"
 #include "DiaryDlg.h"
 #include "NewsDlg.h"
@@ -82,6 +84,13 @@ BOOL MainDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);  // 设置大图标
 	SetIcon(m_hIcon, FALSE); // 设置小图标
 
+	// 禁用关闭按钮
+	CMenu* pSysMenu = GetSystemMenu(FALSE);
+	if (pSysMenu != nullptr)
+	{
+		pSysMenu->EnableMenuItem(SC_CLOSE, MF_BYCOMMAND | MF_GRAYED); // 灰化关闭按钮
+	}
+
 	CString title;
 	title.Format(L"牢黏猫浮生 (%u/40天)", leftDay);
 	SetWindowText(title);
@@ -96,13 +105,18 @@ BOOL MainDlg::OnInitDialog()
 		ScreenToClient(&rect);
 
 		// 根据 DPI 调整大小，并加入缩放因子
-		float scaleFactor = 0.5f; // 缩放因子，值越小图片越小
+		float scaleFactor = 0.52f; // 缩放因子，值越小图片越小
 		int adjustedWidth = static_cast<int>(GetDpiAdjustedSize(rect.Width(), this->GetSafeHwnd()) * scaleFactor);
 		int adjustedHeight = static_cast<int>(GetDpiAdjustedSize(rect.Height(), this->GetSafeHwnd()) * scaleFactor);
 
 		// 设置控件的新大小
 		pPictureControl->SetWindowPos(nullptr, rect.left, rect.top, adjustedWidth, adjustedHeight, SWP_NOZORDER | SWP_NOMOVE);
 	}
+
+	// 设置出租屋标题
+	CString coatTitle;
+	coatTitle.Format(L"您的出租屋 (%u/%u)", total, coat);
+	SetDlgItemText(IDC_STATIC_COAT, coatTitle);
 
 	// 设置市场列表控件样式
 	m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
@@ -115,9 +129,7 @@ BOOL MainDlg::OnInitDialog()
 	// 设置出租屋列表控件样式
 	m_coat.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
 	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, 150);
-	CString coatTitle;
-	coatTitle.Format(L"买进价格 %u/%u", total, coat);
-	m_coat.InsertColumn(1, coatTitle, LVCFMT_LEFT, 999);
+	m_coat.InsertColumn(1, L"买进价格", LVCFMT_LEFT, 150);
 
 	// 动态调整字体大小
 	int dpiAdjustedFontHeight = GetDpiAdjustedFontHeight(28, this->GetSafeHwnd());
@@ -179,6 +191,13 @@ BEGIN_MESSAGE_MAP(MainDlg, CDialogEx)
 	ON_COMMAND(ID_32779, &MainDlg::OnWangba)
 	ON_COMMAND(ID_32774, &MainDlg::OnExit)
 	ON_BN_CLICKED(IDC_BUTTON_BANK, &MainDlg::OnBnClickedButtonBank)
+	ON_COMMAND(ID_32775, &MainDlg::OnBank)
+	ON_BN_CLICKED(IDC_BUTTON_POST, &MainDlg::OnBnClickedButtonPost)
+	ON_COMMAND(ID_32776, &MainDlg::OnPost)
+	ON_BN_CLICKED(IDC_BUTTON_HOSP, &MainDlg::OnBnClickedButtonHosp)
+	ON_COMMAND(ID_32777, &MainDlg::OnHosp)
+	ON_BN_CLICKED(IDC_BUTTON_HOUSE, &MainDlg::OnBnClickedButtonHouse)
+	ON_COMMAND(ID_32771, &MainDlg::OnNewgame)
 END_MESSAGE_MAP()
 
 HBRUSH MainDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -288,6 +307,11 @@ void MainDlg::FlushDisplay()
 	CString strFame;
 	strFame.Format(L"%ld", fame);
 	m_fame.SetWindowText(strFame); // 更新名声值显示
+
+	// 设置出租屋标题
+	CString coatTitle;
+	coatTitle.Format(L"您的出租屋 (%u/%u)", total, coat);
+	SetDlgItemText(IDC_STATIC_COAT, coatTitle);
 }
 
 void MainDlg::NextDay()
@@ -308,7 +332,7 @@ void MainDlg::NextDay()
 
 	if (inBank > 0)
 	{
-		inBank += 10;
+		inBank *= 1.01;
 		FlushDisplay();
 	}
 
@@ -396,6 +420,35 @@ void MainDlg::OnBnClickedButtonFile()
 }
 
 
+void MainDlg::OnNewgame()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (40 - leftDay >= 3)
+		if (MessageBox(L"您正在玩一个游戏，要放弃它并开始新的吗?", L"注意", MB_YESNO | MB_ICONWARNING) == IDNO)
+			return;
+	
+	cash = 2000;
+	inBank = 0;
+	debt = 5500;
+	health = 100;
+	fame = 100;
+
+	total = 0;
+	coat = 100;
+
+	leftDay = 0;
+
+	CString title;
+	title.Format(L"牢黏猫浮生 (%u/40天)", leftDay);
+	SetWindowText(title); // 更新窗口标题
+
+	m_market.DeleteAllItems();
+	m_coat.DeleteAllItems();
+	GenGoods();
+	FlushBtn();
+	FlushDisplay();
+}
+
 void MainDlg::OnExit()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -409,13 +462,102 @@ void MainDlg::OnBnClickedButtonBank()
 	// TODO: 在此添加控件通知处理程序代码
 	BankDlg bankDlg(nullptr, this);
 	bankDlg.DoModal();
+}
+
+void MainDlg::OnBnClickedButtonHosp()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (health == 100)
+	{
+		DiaryDlg diary(nullptr, L"min笑咪咪地望着俺：“大哥！神经科这边挂号.”");
+		diary.DoModal();
+		return;
+	}
+
+	HospitalDlg hosp(nullptr, this);
+	if (hosp.DoModal() == IDCANCEL)
+	{
+		DiaryDlg diary(nullptr, L"医生说，“钱不够哎! 拒绝治疗。”");
+		diary.DoModal();
+	}
 
 	FlushDisplay();
+}
+
+void MainDlg::OnBnClickedButtonPost()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (debt == 0)
+	{
+		if (cash + inBank < 1000)
+		{
+			DiaryDlg diary(nullptr, L"outice嘿嘿笑道：“你没钱,有神经病!”");
+			diary.DoModal();
+		}
+		else if (cash + inBank < 100000 && cash + inBank>1000)
+		{
+			DiaryDlg diary(nullptr, L"outice朝俺点头：“bro想支援家乡1000迷你币吗？”");
+			diary.DoModal();
+		}
+		else if (cash + inBank < 10000000 && cash + inBank>100000)
+		{
+			DiaryDlg diary(nullptr, L"outice在电话中朝俺鞠躬：“富哥!我想把我星怒嫁给您.”");
+			diary.DoModal();
+		}
+		else if (cash + inBank > 10000000)
+		{
+			DiaryDlg diary(nullptr, L"outice在电话中朝俺下跪，说：“您简直是我跌！”");
+			diary.DoModal();
+		}
+		else
+		{
+			DiaryDlg diary(nullptr, L"outice说：“您是赛博黏氢入的典范！”");
+			diary.DoModal();
+		}
+
+		return;
+	}
+
+	PostDlg post(nullptr, this);
+	post.DoModal();
+
+	if (post.back == 0)
+	{
+		DiaryDlg diary(nullptr, L"outice老婆狂吞“和成天下”，冷笑道：“你还得起吗?”");
+		diary.DoModal();
+	}
+
+	FlushDisplay();
+}
+
+void MainDlg::OnBnClickedButtonHouse()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (coat == 140)
+	{
+		DiaryDlg diary(nullptr, L"中介说，您的房子比群主的还大!还租房?");
+		diary.DoModal();
+		return;
+	}
+
+	if (cash < 30000)
+	{
+		DiaryDlg diary(nullptr, L"中介说，您没有三万现金就想租房? 一边凉快去!");
+		diary.DoModal();
+		return;
+	}
 }
 
 void MainDlg::OnBnClickedButtonWangba()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (cash < 15)
+	{
+		DiaryDlg diary(nullptr, L"进网吧至少身上要带15迷你币，呵呵，取钱再来。");
+		diary.DoModal();
+		return;
+	}
+
 	WangbaDlg wangba;
 	wangba.DoModal();
 	
@@ -438,9 +580,60 @@ void MainDlg::OnBnClickedButtonBoss()
 	BossComeDlg.DoModal();
 }
 
+void MainDlg::OnBank()
+{
+	// TODO: 在此添加命令处理程序代码
+	BankDlg bankDlg(nullptr, this);
+	bankDlg.DoModal();
+
+	FlushDisplay();
+}
+
+void MainDlg::OnHosp()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (health == 100)
+	{
+		DiaryDlg diary(nullptr, L"min笑咪咪地望着俺：“大哥！神经科这边挂号.”");
+		diary.DoModal();
+		return;
+	}
+
+	HospitalDlg hosp(nullptr, this);
+	if (hosp.DoModal() == IDCANCEL)
+	{
+		DiaryDlg diary(nullptr, L"医生说，“钱不够哎! 拒绝治疗。”");
+		diary.DoModal();
+	}
+
+	FlushDisplay();
+}
+
+void MainDlg::OnPost()
+{
+	// TODO: 在此添加命令处理程序代码
+	PostDlg post(nullptr, this);
+	post.DoModal();
+
+	if (post.back == 0)
+	{
+		DiaryDlg diary(nullptr, L"outice老婆狂吞“和成天下”，冷笑道：“你还得起吗?”");
+		diary.DoModal();
+	}
+
+	FlushDisplay();
+}
+
 void MainDlg::OnWangba()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (cash < 15)
+	{
+		DiaryDlg diary(nullptr, L"进网吧至少身上要带15迷你币，呵呵，取钱再来。");
+		diary.DoModal();
+		return;
+	}
+
 	WangbaDlg wangbaDlg;
 	wangbaDlg.DoModal();
 

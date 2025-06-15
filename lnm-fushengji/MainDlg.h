@@ -87,4 +87,11 @@ public:
 	afx_msg void OnWangba();
 	afx_msg void OnExit();
 	afx_msg void OnBnClickedButtonBank();
+	afx_msg void OnBank();
+	afx_msg void OnBnClickedButtonPost();
+	afx_msg void OnPost();
+	afx_msg void OnBnClickedButtonHosp();
+	afx_msg void OnHosp();
+	afx_msg void OnBnClickedButtonHouse();
+	afx_msg void OnNewgame();
 };
