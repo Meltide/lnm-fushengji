@@ -336,10 +336,14 @@ void MainDlg::NextDay()
 		FlushDisplay();
 	}
 
-	if (leftDay >= 40) // 检查是否达到游戏结束条件
+	if (leftDay == 39)
 	{
-		EndGame();
+		DiaryDlg diary(nullptr, L"俺明天回家乡，快把全部货物卖掉。");
+		diary.DoModal();
 	}
+
+	if (leftDay >= 40) // 检查是否达到游戏结束条件
+		EndGame();
 }
 
 void MainDlg::EndGame()
