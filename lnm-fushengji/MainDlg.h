@@ -51,6 +51,7 @@ protected:
 	CStatic m_health;
 	CStatic m_fame;
 
+	CImageList m_imageList;
 	CListCtrl m_market;
 	CListCtrl m_coat;
 
@@ -94,4 +95,6 @@ public:
 	afx_msg void OnHosp();
 	afx_msg void OnBnClickedButtonHouse();
 	afx_msg void OnNewgame();
+	afx_msg void OnTop();
+	afx_msg void OnBnClickedButtonBuy();
 };

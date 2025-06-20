@@ -7,12 +7,15 @@
 #include "afxdialogex.h"
 #include "MainDlg.h"
 
+#include "BuyDlg.h"
+
 #include "BankDlg.h"
 #include "PostDlg.h"
 #include "HospitalDlg.h"
 #include "WangbaDlg.h"
 #include "DiaryDlg.h"
 #include "NewsDlg.h"
+#include "TopDlg.h"
 #include "BossComeDlg.h"
 #include "lnm-fushengjiDlg.h"
 #include "AboutDlg.h"
@@ -94,7 +97,7 @@ BOOL MainDlg::OnInitDialog()
 	CString title;
 	title.Format(L"牢黏猫浮生 (%u/40天)", leftDay);
 	SetWindowText(title);
-
+	
 	// 获取图片控件
 	CStatic* pPictureControl = (CStatic*)GetDlgItem(IDC_SUBWAY); // 替换为你的图片控件 ID
 	if (pPictureControl)
@@ -105,7 +108,7 @@ BOOL MainDlg::OnInitDialog()
 		ScreenToClient(&rect);
 
 		// 根据 DPI 调整大小，并加入缩放因子
-		float scaleFactor = 0.52f; // 缩放因子，值越小图片越小
+		float scaleFactor = 0.39f; // 缩放因子，值越小图片越小
 		int adjustedWidth = static_cast<int>(GetDpiAdjustedSize(rect.Width(), this->GetSafeHwnd()) * scaleFactor);
 		int adjustedHeight = static_cast<int>(GetDpiAdjustedSize(rect.Height(), this->GetSafeHwnd()) * scaleFactor);
 
@@ -117,6 +120,11 @@ BOOL MainDlg::OnInitDialog()
 	CString coatTitle;
 	coatTitle.Format(L"您的出租屋 (%u/%u)", total, coat);
 	SetDlgItemText(IDC_STATIC_COAT, coatTitle);
+
+	// 设置图标列表
+	m_imageList.Create(32, 32, ILC_COLOR32 | ILC_MASK, 1, 1);
+	m_imageList.Add(AfxGetApp()->LoadIcon(IDI_GOODS));
+	m_market.SetImageList(&m_imageList, LVSIL_SMALL);
 
 	// 设置市场列表控件样式
 	m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
@@ -198,6 +206,8 @@ BEGIN_MESSAGE_MAP(MainDlg, CDialogEx)
 	ON_COMMAND(ID_32777, &MainDlg::OnHosp)
 	ON_BN_CLICKED(IDC_BUTTON_HOUSE, &MainDlg::OnBnClickedButtonHouse)
 	ON_COMMAND(ID_32771, &MainDlg::OnNewgame)
+	ON_COMMAND(ID_32772, &MainDlg::OnTop)
+	ON_BN_CLICKED(IDC_BUTTON_BUY, &MainDlg::OnBnClickedButtonBuy)
 END_MESSAGE_MAP()
 
 HBRUSH MainDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -244,7 +254,7 @@ void MainDlg::GenGoods()
 
 		CString price;
 		price.Format(L"%d", rand() % 1000 + 100); // 随机生成价格
-		m_market.InsertItem(i, goods[randomIndex]); // 插入货品名称
+		m_market.InsertItem(LVIF_TEXT | LVIF_IMAGE, i, goods[randomIndex], 0, 0, 0, 0); // 插入货品名称
 		m_market.SetItemText(i, 1, price); // 插入货品价格
 	}
 }
@@ -663,4 +673,17 @@ void MainDlg::OnAbout()
 	// TODO: 在此添加命令处理程序代码
 	AboutDlg about;
 	about.DoModal();
+}
+
+void MainDlg::OnTop()
+{
+	// TODO: 在此添加命令处理程序代码
+	TopDlg top;
+	top.DoModal();
+}
+
+void MainDlg::OnBnClickedButtonBuy()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//BuyDlg buy(nullptr, this,)
 }

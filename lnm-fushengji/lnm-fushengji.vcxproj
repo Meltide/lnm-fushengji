@@ -187,6 +187,7 @@
     <ClInclude Include="BankDlg.h" />
     <ClInclude Include="BankJyDlg.h" />
     <ClInclude Include="BossComeDlg.h" />
+    <ClInclude Include="BuyDlg.h" />
     <ClInclude Include="DiaryDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HospitalDlg.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="PostDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TopDlg.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="WangbaDlg.h" />
   </ItemGroup>
@@ -206,6 +208,7 @@
     <ClCompile Include="BankDlg.cpp" />
     <ClCompile Include="BankJyDlg.cpp" />
     <ClCompile Include="BossComeDlg.cpp" />
+    <ClCompile Include="BuyDlg.cpp" />
     <ClCompile Include="DiaryDlg.cpp" />
     <ClCompile Include="HospitalDlg.cpp" />
     <ClCompile Include="lnm-fushengji.cpp" />
@@ -219,6 +222,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PostDlg.cpp" />
+    <ClCompile Include="TopDlg.cpp" />
     <ClCompile Include="WangbaDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -230,6 +234,7 @@
   <ItemGroup>
     <Image Include="res\bitmap1.bmp" />
     <Image Include="res\diary.bmp" />
+    <Image Include="res\goods.ico" />
     <Image Include="res\hospital.ico" />
     <Image Include="res\lnm-fushengji.ico" />
     <Image Include="res\news.bmp" />

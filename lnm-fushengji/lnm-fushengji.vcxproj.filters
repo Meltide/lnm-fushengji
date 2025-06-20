@@ -60,6 +60,18 @@
     <ClInclude Include="utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="HospitalDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PostDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TopDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BuyDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lnm-fushengji.cpp">
@@ -95,6 +107,18 @@
     <ClCompile Include="BankJyDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HospitalDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PostDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TopDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BuyDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="lnmfushengji.rc">
@@ -120,6 +144,12 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\news.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\hospital.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\goods.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
