@@ -25,6 +25,7 @@
 #define IDI_GOODS                       155
 #define IDD_TOPLIST                     156
 #define IDD_BUY                         158
+#define IDD_SELL                        159
 #define IDC_LOAD                        1000
 #define IDC_BUTTON1                     1001
 #define IDC_TITLE                       1002
@@ -83,6 +84,7 @@
 #define IDC_LIST1                       1046
 #define IDC_ASK                         1047
 #define IDC_EDIT1                       1048
+#define IDC_COUNT                       1048
 #define IDC_SPIN1                       1049
 #define ID_32771                        32771
 #define ID_32772                        32772

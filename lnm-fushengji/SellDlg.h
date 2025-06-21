@@ -3,27 +3,26 @@
 #include "MainDlg.h"
 
 
-// BuyDlg 对话框
+// SellDlg 对话框
 
-class BuyDlg : public CDialogEx
+class SellDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(BuyDlg)
+	DECLARE_DYNAMIC(SellDlg)
 
 	MainDlg* m_main;
-	CString m_goods;
 
 	int m_nItem;
-	int m_count = 0;
-	int m_remain = 0;
-	int m_price = 0;
+	CString m_goods;
+	int m_count;
+	int m_price;
 
 public:
-	BuyDlg(CWnd* pParent = nullptr, MainDlg* main = nullptr);   // 标准构造函数
-	virtual ~BuyDlg();
+	SellDlg(CWnd* pParent = nullptr, MainDlg* main = nullptr);   // 标准构造函数
+	virtual ~SellDlg();
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_BUY };
+	enum { IDD = IDD_SELL };
 #endif
 
 protected:

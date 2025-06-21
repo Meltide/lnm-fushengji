@@ -27,6 +27,9 @@ public:
 
 	CString goods[8];
 
+	CListCtrl m_market;
+	CListCtrl m_coat;
+
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_MAIN };
@@ -42,6 +45,7 @@ protected:
 	void MainDlg::FlushBtn();
 	void MainDlg::Clicked(CButton& btn);
 	void FlushDisplay();
+	void MainDlg::TriggerRandomEvents();
 	void MainDlg::NextDay();
 	void MainDlg::EndGame();
 
@@ -52,8 +56,6 @@ protected:
 	CStatic m_fame;
 
 	CImageList m_imageList;
-	CListCtrl m_market;
-	CListCtrl m_coat;
 
 	CButton m_iceHome;
 	CButton m_mcpeCity;
@@ -97,4 +99,5 @@ public:
 	afx_msg void OnNewgame();
 	afx_msg void OnTop();
 	afx_msg void OnBnClickedButtonBuy();
+	afx_msg void OnBnClickedButtonSell();
 };

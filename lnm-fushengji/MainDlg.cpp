@@ -8,6 +8,7 @@
 #include "MainDlg.h"
 
 #include "BuyDlg.h"
+#include "SellDlg.h"
 
 #include "BankDlg.h"
 #include "PostDlg.h"
@@ -20,6 +21,82 @@
 #include "lnm-fushengjiDlg.h"
 #include "AboutDlg.h"
 
+
+namespace {
+	// 只在程序启动时初始化一次随机种子
+	struct RandomSeedInit {
+		RandomSeedInit() { srand((unsigned)time(nullptr)); }
+	} _randomSeedInit;
+
+	int RandomNum(int upper) { return rand() % upper; }
+}
+
+struct Message {
+	int freq;   // the frequency of the events 
+	char* msg;  // what message to display when event happen
+	int drug;  // goods ID to be influenced
+	int plus;  // price increased ( *)
+	int minus; //price decrease   ( /)
+	int add;   // how many goods to give user (+) 
+};
+
+struct BadEvent {
+	int freq;     // the frequency of this event
+	char* msg;    // the message to dispplay while event happen
+	int hunt;     // how many points user get hurted when event happen
+};
+
+struct StealEvent {
+	int freq;  //the frequency of the event
+	char* msg; //the message to display when event happen
+	int ratoi;  // how many ratio decreased. money=money*(1-ratoi)
+};
+
+Message gameMsgs[] = {
+	{170, "砖家提议提高群友“强碱素质”，进口福瑞颇受欢迎!", 5, 2, 0, 0},
+	{139, "有入自豪地说：饿了不用吃答辩，吃巧克力（剧毒）就可以!", 3, 3, 0, 0},
+	{100, "医院的秘密报告：“《outice 艾草》功效甚过91短视频”!", 4, 5, 0, 0},
+	{41, "文盲说：“黑神话悟空？呸！不如盗版Galaxy。”", 2, 4, 0, 0},
+	{37, "《吉吉国经济小报》社论：“走私公交车大力推进汽车消费!”", 1, 3, 0, 0},
+	{23, "《吉吉国真理报》社论：“提倡卢关，落到实处”，伪劣斐济杯大受欢迎!", 7, 4, 0, 0},
+	{37, "91.com电子书店也不敢卖《outice艾草》，黑市一册可卖天价!", 4, 8, 0, 0},
+	{15, "minqwq在阳光牢黏猫窝说：“我酷!我使用伪劣斐济杯!”，伪劣斐济杯供不应求!", 7, 7, 0, 0},
+	{40, "牢黏猫窝有人狂吃美团巧克力，可以卖出天价!", 3, 7, 0, 0},
+	{29, "牢黏猫窝的群友们开始找片，看片神器大受欢迎！!", 6, 7, 0, 0},
+	{35, "大伊万疯狂地购买走私公交车！价格狂升!", 1, 8, 0, 0},
+	{17, "市场上充斥着来自美团的走私和成天下!", 0, 0, 8, 0},
+	{24, "牢黏猫窝的孩子们都忙于上网看片，进口福瑞没人愿意超。", 5, 0, 5, 0},
+	{18, "盗版业十分兴旺，“吉吉国硅谷”全是卖盗版Galaxy Client的福瑞!", 2, 0, 8, 0},
+	{160, "吉吉国的老壁灯资助俺两部走私公交车！发了！！", 1, 0, 0, 2},
+	{45, "三次方扫荡后，俺在黑暗角落里发现了孙超丢失的进口和成天下。", 0, 0, 0, 6},
+	{35, "沙发瑞回家前把一些美团巧克力（剧毒）给俺!", 3, 0, 0, 4},
+	{140,"媒体报道：又有霓虹国出口到吉吉国的产品出事了! 出事后霓虹人死不认帐,拒绝赔偿。outice得知此消息，托人把他用的看片神器（无任何厂商标识）硬卖给您，收您2500元。",6,0,0,1},
+};
+
+BadEvent events[] = {
+	{117, "大街上两个xxs打了俺!", 3},
+	{157, "俺在过街地道被Graphic超了一顿! ", 20},
+	{21, "BBC追俺超过三个胡同。 ",1},
+	{100, "牢黏猫窝拥挤的交通让俺心焦! ",1},
+	{35, "打斐济的打俺一耳光!",1},
+	{313, "一群Graphic超了俺!", 10},
+	{120, "附近胡同的一个小男娘砸俺一砖头!", 5},
+	{29, "附近网吧一个候国玉用电棍电击俺!",3},
+	{43, "牢黏猫窝臭黑的小河熏着我了! ",1},
+	{45, "守服务器的孙承欢嘲笑俺没吉吉国户口!",1},
+	{48, "牢黏猫窝高温114514度!俺热...",1},
+	{33, "开服添了新风景，牢黏猫窝又来沙尘暴!",1},
+};
+
+StealEvent steals[] = {
+	{60, "俺怜悯地铁口扮演成乞丐的大伊万。", 10},
+	{125, "沙发瑞在街头拦住俺：“bro给点钱用!”。",10},
+	{100, "一个福瑞碰了俺一下，说：“别超了!”。",40},
+	{65, "三个带红袖章的洗头佬揪住俺：“你是美团人?罚款!”",20},
+	{35, "两个猛0揪住俺：“兄弟你今天必须月我。”", 15},
+	{27, "群主说：“办牢黏猫证?晚上不要去我家给我送钱哦。”", 10},
+	{40, "牢黏猫窝空气污染得厉害,俺去氧吧吸氧...", 5},
+};
 
 // MainDlg 对话框
 
@@ -108,7 +185,7 @@ BOOL MainDlg::OnInitDialog()
 		ScreenToClient(&rect);
 
 		// 根据 DPI 调整大小，并加入缩放因子
-		float scaleFactor = 0.39f; // 缩放因子，值越小图片越小
+		float scaleFactor = 0.38f; // 缩放因子，值越小图片越小
 		int adjustedWidth = static_cast<int>(GetDpiAdjustedSize(rect.Width(), this->GetSafeHwnd()) * scaleFactor);
 		int adjustedHeight = static_cast<int>(GetDpiAdjustedSize(rect.Height(), this->GetSafeHwnd()) * scaleFactor);
 
@@ -121,32 +198,53 @@ BOOL MainDlg::OnInitDialog()
 	coatTitle.Format(L"您的出租屋 (%u/%u)", total, coat);
 	SetDlgItemText(IDC_STATIC_COAT, coatTitle);
 
+	// 获取DPI缩放因子
+	HDC hdc = ::GetDC(m_hWnd);
+	int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
+	::ReleaseDC(m_hWnd, hdc);
+	float dpiScale = dpi / 96.0f;
+
 	// 设置图标列表
-	m_imageList.Create(32, 32, ILC_COLOR32 | ILC_MASK, 1, 1);
+	int iconSize = static_cast<int>(18 * dpiScale);
+	m_imageList.Create(iconSize, iconSize, ILC_COLOR32 | ILC_MASK, 1, 1);
 	m_imageList.Add(AfxGetApp()->LoadIcon(IDI_GOODS));
 	m_market.SetImageList(&m_imageList, LVSIL_SMALL);
+	m_coat.SetImageList(&m_imageList, LVSIL_SMALL);
 
 	// 设置市场列表控件样式
 	m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
-	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, 150);
-	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, 150);
+
+	CRect rcMarket;
+	m_market.GetClientRect(&rcMarket);
+	int marketWidth = static_cast<int>(rcMarket.Width() * dpiScale);
+
+	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5));
+	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5));
 
 	// 初始化黑市货品
 	GenGoods();
 
 	// 设置出租屋列表控件样式
 	m_coat.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
-	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, 150);
-	m_coat.InsertColumn(1, L"买进价格", LVCFMT_LEFT, 150);
+
+	CRect rcCoat;
+	m_coat.GetClientRect(&rcCoat);
+	int coatWidth = static_cast<int>(rcCoat.Width() * dpiScale);
+
+	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4));
+	m_coat.InsertColumn(1, L"数量", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2));
+	m_coat.InsertColumn(2, L"买进价格", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4));
 
 	// 动态调整字体大小
 	int dpiAdjustedFontHeight = GetDpiAdjustedFontHeight(28, this->GetSafeHwnd());
 
-	// 创建自定义字体
+	// 创建等宽字体（如 Consolas 或 Courier New）
 	LOGFONT lf = { 0 };
 	lf.lfHeight = dpiAdjustedFontHeight; // 根据 DPI 调整字体高度
 	lf.lfWeight = FW_BOLD;              // 粗体
-	wcscpy_s(lf.lfFaceName, L"微软雅黑"); // 字体名称
+	// 推荐 Consolas，若无则 Courier New
+	wcscpy_s(lf.lfFaceName, L"Consolas");
+	m_fontBold.DeleteObject();
 	m_fontBold.CreateFontIndirect(&lf);
 
 	// 应用字体到控件
@@ -208,6 +306,7 @@ BEGIN_MESSAGE_MAP(MainDlg, CDialogEx)
 	ON_COMMAND(ID_32771, &MainDlg::OnNewgame)
 	ON_COMMAND(ID_32772, &MainDlg::OnTop)
 	ON_BN_CLICKED(IDC_BUTTON_BUY, &MainDlg::OnBnClickedButtonBuy)
+	ON_BN_CLICKED(IDC_BUTTON_SELL, &MainDlg::OnBnClickedButtonSell)
 END_MESSAGE_MAP()
 
 HBRUSH MainDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -236,26 +335,32 @@ HBRUSH MainDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void MainDlg::GenGoods()
 {
-	// 初始化黑市货品
-	srand((unsigned)time(nullptr)); // 设置随机种子
-	int goodsCount = sizeof(goods) / sizeof(goods[0]); // 获取货品总数
-	const int randomCount = 5; // 随机选择五个货品
-	std::vector<int> selectedIndices; // 用于存储已选择的货品索引
+	int priceTable[8];
+	priceTable[0] = 100 + RandomNum(350);
+	priceTable[1] = 15000 + RandomNum(15000);
+	priceTable[2] = 5 + RandomNum(50);
+	priceTable[3] = 1000 + RandomNum(2500);
+	priceTable[4] = 5000 + RandomNum(9000);
+	priceTable[5] = 250 + RandomNum(600);
+	priceTable[6] = 750 + RandomNum(750);
+	priceTable[7] = 65 + RandomNum(180);
 
-	for (int i = 0; i < randomCount; ++i)
-	{
-		int randomIndex;
-		do
-		{
-			randomIndex = rand() % goodsCount; // 随机选择货品索引
-		} while (std::find(selectedIndices.begin(), selectedIndices.end(), randomIndex) != selectedIndices.end()); // 确保不重复
+	// 随机去掉3个商品
+	std::vector<int> indices{ 0,1,2,3,4,5,6,7 };
+	std::vector<int> selectedIndices;
+	for (int i = 0; i < 3; ++i) {
+		int idx = RandomNum((int)indices.size());
+		indices.erase(indices.begin() + idx);
+	}
+	selectedIndices = indices;
 
-		selectedIndices.push_back(randomIndex); // 记录已选择的索引
-
+	m_market.DeleteAllItems();
+	for (size_t i = 0; i < selectedIndices.size(); ++i) {
+		int id = selectedIndices[i];
 		CString price;
-		price.Format(L"%d", rand() % 1000 + 100); // 随机生成价格
-		m_market.InsertItem(LVIF_TEXT | LVIF_IMAGE, i, goods[randomIndex], 0, 0, 0, 0); // 插入货品名称
-		m_market.SetItemText(i, 1, price); // 插入货品价格
+		price.Format(L"%d", priceTable[id]);
+		m_market.InsertItem(LVIF_TEXT | LVIF_IMAGE, (int)i, goods[id], 0, 0, 0, 0);
+		m_market.SetItemText((int)i, 1, price);
 	}
 }
 
@@ -324,6 +429,128 @@ void MainDlg::FlushDisplay()
 	SetDlgItemText(IDC_STATIC_COAT, coatTitle);
 }
 
+void MainDlg::TriggerRandomEvents()
+{
+	// 处理Message事件
+	int msgCount = sizeof(gameMsgs) / sizeof(gameMsgs[0]);
+	for (int i = 0; i < msgCount; ++i) {
+		// 查找该物品是否在黑市
+		int row = -1;
+		for (int j = 0; j < m_market.GetItemCount(); ++j) {
+			CString name = m_market.GetItemText(j, 0);
+			if (name == goods[gameMsgs[i].drug]) {
+				row = j;
+				break;
+			}
+		}
+		if (row == -1)
+			continue; // 黑市没有该物品，事件无效
+
+		if (!(RandomNum(950) % gameMsgs[i].freq)) {
+			CString msg = CString(gameMsgs[i].msg);
+
+			// 处理商品价格变化
+			int price = _wtoi(m_market.GetItemText(row, 1));
+			if (gameMsgs[i].plus > 0)
+				price *= gameMsgs[i].plus;
+			if (gameMsgs[i].minus > 0)
+				price /= gameMsgs[i].minus;
+			if (price < 1) price = 1;
+			CString newPrice;
+			newPrice.Format(L"%d", price);
+			m_market.SetItemText(row, 1, newPrice);
+
+			// 赠送商品
+			if (gameMsgs[i].add > 0) {
+				if (total + gameMsgs[i].add > coat) {
+					CString warn;
+					warn.Format(L"可惜!俺租的房子太小，只能放%d个物品。", coat);
+					DiaryDlg diary(nullptr, warn);
+					diary.DoModal();
+				}
+				else {
+					int found = -1;
+					for (int k = 0; k < m_coat.GetItemCount(); ++k) {
+						if (m_coat.GetItemText(k, 0) == goods[gameMsgs[i].drug]) {
+							found = k;
+							break;
+						}
+					}
+					if (found != -1) {
+						int cnt = _wtoi(m_coat.GetItemText(found, 1));
+						cnt += gameMsgs[i].add;
+						CString cntStr;
+						cntStr.Format(L"%d", cnt);
+						m_coat.SetItemText(found, 1, cntStr);
+					}
+					else {
+						int n = m_coat.InsertItem(0, goods[gameMsgs[i].drug]);
+						CString cntStr;
+						cntStr.Format(L"%d", gameMsgs[i].add);
+						m_coat.SetItemText(n, 1, cntStr);
+						m_coat.SetItemText(n, 2, L"0");
+					}
+					total += gameMsgs[i].add;
+				}
+			}
+
+			// 特殊事件：收2500元
+			if (i == msgCount - 1) {
+				debt += 2500;
+				msg += L"\n俺的债务增加了2500元。";
+			}
+
+			// 更新显示
+			FlushDisplay();
+
+			NewsDlg news(nullptr, msg);
+			news.DoModal();
+			break; // 只触发一个Message事件
+		}
+	}
+
+	// 处理BadEvent事件
+	int badCount = sizeof(events) / sizeof(events[0]);
+	for (int i = 0; i < badCount; ++i) {
+		if (!(RandomNum(1000) % events[i].freq)) {
+			CString msg = CString(events[i].msg);
+			health -= events[i].hunt;
+			if (health < 0) health = 0;
+
+			// 附加健康减少说明
+			msg.AppendFormat(L"\n俺的健康减少了%d点。", events[i].hunt);
+
+			// 更新显示
+			FlushDisplay();
+
+			DiaryDlg diary(nullptr, msg);
+			diary.DoModal();
+			break; // 只触发一个BadEvent
+		}
+	}
+
+	// 处理StealEvent事件
+	int stealCount = sizeof(steals) / sizeof(steals[0]);
+	for (int i = 0; i < stealCount; ++i) {
+		if (!(RandomNum(1000) % steals[i].freq)) {
+			CString msg = CString(steals[i].msg);
+			int oldCash = cash;
+			cash = cash * (100 - steals[i].ratoi) / 100;
+
+			// 附加现金减少说明
+			int lost = oldCash - cash;
+			msg.AppendFormat(L"\n俺的迷你币减少了%d元。", lost);
+
+			// 更新显示
+			FlushDisplay();
+
+			DiaryDlg diary(nullptr, msg);
+			diary.DoModal();
+			break; // 只触发一个StealEvent
+		}
+	}
+}
+
 void MainDlg::NextDay()
 {
 	m_market.DeleteAllItems(); // 清空黑市货品列表
@@ -345,6 +572,8 @@ void MainDlg::NextDay()
 		inBank *= 1.01;
 		FlushDisplay();
 	}
+
+	TriggerRandomEvents();
 
 	if (leftDay == 39)
 	{
@@ -476,6 +705,7 @@ void MainDlg::OnBnClickedButtonBank()
 	// TODO: 在此添加控件通知处理程序代码
 	BankDlg bankDlg(nullptr, this);
 	bankDlg.DoModal();
+	FlushDisplay();
 }
 
 void MainDlg::OnBnClickedButtonHosp()
@@ -685,5 +915,15 @@ void MainDlg::OnTop()
 void MainDlg::OnBnClickedButtonBuy()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	//BuyDlg buy(nullptr, this,)
+	BuyDlg buy(nullptr, this);
+	buy.DoModal();
+	FlushDisplay();
+}
+
+void MainDlg::OnBnClickedButtonSell()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	SellDlg sell(nullptr, this);
+	sell.DoModal();
+	FlushDisplay();
 }

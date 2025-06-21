@@ -72,6 +72,9 @@
     <ClInclude Include="BuyDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SellDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lnm-fushengji.cpp">
@@ -117,6 +120,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="BuyDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SellDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
