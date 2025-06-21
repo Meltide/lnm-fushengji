@@ -162,22 +162,22 @@ void MainDlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL MainDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+    CDialogEx::OnInitDialog();
 
-	SetIcon(m_hIcon, TRUE);  // 设置大图标
-	SetIcon(m_hIcon, FALSE); // 设置小图标
+    SetIcon(m_hIcon, TRUE);  // 设置大图标
+    SetIcon(m_hIcon, FALSE); // 设置小图标
 
-	// 禁用关闭按钮
-	CMenu* pSysMenu = GetSystemMenu(FALSE);
-	if (pSysMenu != nullptr)
-	{
-		pSysMenu->EnableMenuItem(SC_CLOSE, MF_BYCOMMAND | MF_GRAYED); // 灰化关闭按钮
-	}
+    // 禁用关闭按钮
+    CMenu* pSysMenu = GetSystemMenu(FALSE);
+    if (pSysMenu != nullptr)
+    {
+        pSysMenu->EnableMenuItem(SC_CLOSE, MF_BYCOMMAND | MF_GRAYED); // 灰化关闭按钮
+    }
 
-	CString title;
-	title.Format(L"牢黏猫浮生 (%u/40天)", leftDay);
-	SetWindowText(title);
-	
+    CString title;
+    title.Format(L"牢黏猫浮生 (%u/40天)", leftDay);
+    SetWindowText(title);
+
 	// 获取图片控件
 	CStatic* pPictureControl = (CStatic*)GetDlgItem(IDC_SUBWAY); // 替换为你的图片控件 ID
 	if (pPictureControl)
@@ -188,7 +188,7 @@ BOOL MainDlg::OnInitDialog()
 		ScreenToClient(&rect);
 
 		// 根据 DPI 调整大小，并加入缩放因子
-		float scaleFactor = 0.38f; // 缩放因子，值越小图片越小
+		float scaleFactor = 0.35f; // 缩放因子，值越小图片越小
 		int adjustedWidth = static_cast<int>(GetDpiAdjustedSize(rect.Width(), this->GetSafeHwnd()) * scaleFactor);
 		int adjustedHeight = static_cast<int>(GetDpiAdjustedSize(rect.Height(), this->GetSafeHwnd()) * scaleFactor);
 
@@ -196,98 +196,95 @@ BOOL MainDlg::OnInitDialog()
 		pPictureControl->SetWindowPos(nullptr, rect.left, rect.top, adjustedWidth, adjustedHeight, SWP_NOZORDER | SWP_NOMOVE);
 	}
 
-	// 设置出租屋标题
-	CString coatTitle;
-	coatTitle.Format(L"您的出租屋 (%u/%u)", total, coat);
-	SetDlgItemText(IDC_STATIC_COAT, coatTitle);
+    // 获取DPI缩放因子
+    HDC hdc = ::GetDC(m_hWnd);
+    int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
+    ::ReleaseDC(m_hWnd, hdc);
+    float dpiScale = dpi / 96.0f;
 
-	// 获取DPI缩放因子
-	HDC hdc = ::GetDC(m_hWnd);
-	int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
-	::ReleaseDC(m_hWnd, hdc);
-	float dpiScale = dpi / 96.0f;
+    // 设置图标列表
+    int iconSize = static_cast<int>(18 * dpiScale);
+    m_imageList.Create(iconSize, iconSize, ILC_COLOR32 | ILC_MASK, 1, 1);
+    m_imageList.Add(AfxGetApp()->LoadIcon(IDI_GOODS));
+    m_market.SetImageList(&m_imageList, LVSIL_SMALL);
+    m_coat.SetImageList(&m_imageList, LVSIL_SMALL);
 
-	// 设置图标列表
-	int iconSize = static_cast<int>(18 * dpiScale);
-	m_imageList.Create(iconSize, iconSize, ILC_COLOR32 | ILC_MASK, 1, 1);
-	m_imageList.Add(AfxGetApp()->LoadIcon(IDI_GOODS));
-	m_market.SetImageList(&m_imageList, LVSIL_SMALL);
-	m_coat.SetImageList(&m_imageList, LVSIL_SMALL);
+    // 设置市场列表控件样式
+    m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
 
-	// 设置市场列表控件样式
-	m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
+    CRect rcMarket;
+    m_market.GetClientRect(&rcMarket);
+    int marketWidth = static_cast<int>(rcMarket.Width() * dpiScale);
 
-	CRect rcMarket;
-	m_market.GetClientRect(&rcMarket);
-	int marketWidth = static_cast<int>(rcMarket.Width() * dpiScale);
+    // 动态调整黑市列表列宽
+    m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5)); // 商品列占50%
+    m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5)); // 黑市价格列占50%
 
-	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.25));
-	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.25));
+    // 初始化黑市货品
+    GenGoods();
 
-	// 初始化黑市货品
-	GenGoods();
+    // 设置出租屋列表控件样式
+    m_coat.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
 
-	// 设置出租屋列表控件样式
-	m_coat.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
+    CRect rcCoat;
+    m_coat.GetClientRect(&rcCoat);
+    int coatWidth = static_cast<int>(rcCoat.Width() * dpiScale);
 
-	CRect rcCoat;
-	m_coat.GetClientRect(&rcCoat);
-	int coatWidth = static_cast<int>(rcCoat.Width() * dpiScale);
+    // 动态调整出租屋列表列宽
+    m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4)); // 商品列占40%
+    m_coat.InsertColumn(1, L"数量", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2)); // 数量列占20%
+    m_coat.InsertColumn(2, L"买进价格", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4)); // 买进价格列占40%
 
-	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2));
-	m_coat.InsertColumn(1, L"数量", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.1));
-	m_coat.InsertColumn(2, L"买进价格", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2));
+    // 动态调整字体大小
+    int dpiAdjustedFontHeight = GetDpiAdjustedFontHeight(28, this->GetSafeHwnd());
 
-	// 动态调整字体大小
-	int dpiAdjustedFontHeight = GetDpiAdjustedFontHeight(28, this->GetSafeHwnd());
+    // 创建等宽字体
+    LOGFONT lf = { 0 };
+    lf.lfHeight = dpiAdjustedFontHeight; // 根据 DPI 调整字体高度
+    lf.lfWeight = FW_BOLD;               // 粗体
+    // 推荐 Consolas，若无则 Courier New
+    wcscpy_s(lf.lfFaceName, L"Consolas");
+    m_fontBold.DeleteObject();
+    m_fontBold.CreateFontIndirect(&lf);
 
-	// 创建等宽字体
-	LOGFONT lf = { 0 };
-	lf.lfHeight = dpiAdjustedFontHeight; // 根据 DPI 调整字体高度
-	lf.lfWeight = FW_BOLD;               // 粗体
-	// 推荐 Consolas，若无则 Courier New
-	wcscpy_s(lf.lfFaceName, L"Consolas");
-	m_fontBold.DeleteObject();
-	m_fontBold.CreateFontIndirect(&lf);
+    // 应用字体到控件
+    m_cash.SetFont(&m_fontBold);
+    m_inBank.SetFont(&m_fontBold);
+    m_debt.SetFont(&m_fontBold);
+    m_health.SetFont(&m_fontBold);
+    m_fame.SetFont(&m_fontBold);
 
-	// 应用字体到控件
-	m_cash.SetFont(&m_fontBold);
-	m_inBank.SetFont(&m_fontBold);
-	m_debt.SetFont(&m_fontBold);
-	m_health.SetFont(&m_fontBold);
-	m_fame.SetFont(&m_fontBold);
+    // 设置按钮的字体
+    lf.lfHeight = GetDpiAdjustedFontHeight(16, this->GetSafeHwnd());
+    lf.lfWeight = FW_NORMAL;
+    wcscpy_s(lf.lfFaceName, L"Microsoft YaHei UI");
+    m_buttonFont.CreateFontIndirect(&lf);
 
-	// 设置按钮的字体
-	lf.lfHeight = GetDpiAdjustedFontHeight(16, this->GetSafeHwnd());
-	lf.lfWeight = FW_NORMAL;
-	wcscpy_s(lf.lfFaceName, L"Microsoft YaHei UI");
-	m_buttonFont.CreateFontIndirect(&lf);
+    m_go.SetFont(&m_buttonFont);
+    m_boss.SetFont(&m_buttonFont);
 
-	m_go.SetFont(&m_buttonFont);
-	m_boss.SetFont(&m_buttonFont);
+    // 设置每个控件的文本
+    CString strCash;
+    strCash.Format(L"%ld", cash);
+    m_cash.SetWindowText(strCash);
 
-	// 设置每个控件的文本
-	CString strCash;
-	strCash.Format(L"%ld", cash);
-	m_cash.SetWindowText(strCash);
+    CString strInBank;
+    strInBank.Format(L"%ld", inBank);
+    m_inBank.SetWindowText(strInBank);
 
-	CString strInBank;
-	strInBank.Format(L"%ld", inBank);
-	m_inBank.SetWindowText(strInBank);
+    CString strDebt;
+    strDebt.Format(L"%ld", debt);
+    m_debt.SetWindowText(strDebt);
 
-	CString strDebt;
-	strDebt.Format(L"%ld", debt);
-	m_debt.SetWindowText(strDebt);
+    CString strHealth;
+    strHealth.Format(L"%ld", health);
+    m_health.SetWindowText(strHealth);
 
-	CString strHealth;
-	strHealth.Format(L"%ld", health);
-	m_health.SetWindowText(strHealth);
+    CString strFame;
+    strFame.Format(L"%ld", fame);
+    m_fame.SetWindowText(strFame);
 
-	CString strFame;
-	strFame.Format(L"%ld", fame);
-	m_fame.SetWindowText(strFame);
-
-	return TRUE;  // return TRUE unless you set the focus to a control
+    return TRUE;  // return TRUE unless you set the focus to a control
 }
 
 BEGIN_MESSAGE_MAP(MainDlg, CDialogEx)
