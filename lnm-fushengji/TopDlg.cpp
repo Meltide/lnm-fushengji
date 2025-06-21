@@ -33,11 +33,30 @@ BOOL TopDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	m_topList.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
-	m_topList.InsertColumn(0, L"", LVCFMT_LEFT, 50);
-	m_topList.InsertColumn(1, L"姓名", LVCFMT_LEFT, 200);
-	m_topList.InsertColumn(2, L"金钱", LVCFMT_LEFT, 200);
-	m_topList.InsertColumn(3, L"健康程度", LVCFMT_LEFT, 150);
-	m_topList.InsertColumn(4, L"名声", LVCFMT_LEFT, 120);
+
+	// 获取DPI缩放因子
+	HDC hdc = ::GetDC(m_hWnd);
+	int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
+	::ReleaseDC(m_hWnd, hdc);
+	float dpiScale = dpi / 96.0f;
+
+	// 获取列表控件客户区宽度
+	CRect rcList;
+	m_topList.GetClientRect(&rcList);
+	int listWidth = rcList.Width();
+
+	// 按比例分配列宽
+	int col0 = static_cast<int>(listWidth * 0.10f); // 序号
+	int col1 = static_cast<int>(listWidth * 0.28f); // 姓名
+	int col2 = static_cast<int>(listWidth * 0.22f); // 金钱
+	int col3 = static_cast<int>(listWidth * 0.22f); // 健康
+	int col4 = listWidth - (col0 + col1 + col2 + col3); // 名声，剩余全部
+
+	m_topList.InsertColumn(0, L"", LVCFMT_LEFT, col0);
+	m_topList.InsertColumn(1, L"姓名", LVCFMT_LEFT, col1);
+	m_topList.InsertColumn(2, L"金钱", LVCFMT_LEFT, col2);
+	m_topList.InsertColumn(3, L"健康程度", LVCFMT_LEFT, col3);
+	m_topList.InsertColumn(4, L"名声", LVCFMT_LEFT, col4);
 
 	std::ifstream file("score.txt");
 	if (!file.is_open())

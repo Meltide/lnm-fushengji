@@ -191,6 +191,8 @@
     <ClInclude Include="DiaryDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HospitalDlg.h" />
+    <ClInclude Include="IconBtn.h" />
+    <ClInclude Include="Intop.h" />
     <ClInclude Include="lnm-fushengji.h" />
     <ClInclude Include="lnm-fushengjiDlg.h" />
     <ClInclude Include="MainDlg.h" />
@@ -212,6 +214,8 @@
     <ClCompile Include="BuyDlg.cpp" />
     <ClCompile Include="DiaryDlg.cpp" />
     <ClCompile Include="HospitalDlg.cpp" />
+    <ClCompile Include="IconBtn.cpp" />
+    <ClCompile Include="Intop.cpp" />
     <ClCompile Include="lnm-fushengji.cpp" />
     <ClCompile Include="lnm-fushengjiDlg.cpp" />
     <ClCompile Include="MainDlg.cpp" />
@@ -234,13 +238,18 @@
     <None Include="res\lnmfushengji.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bank.ico" />
     <Image Include="res\bitmap1.bmp" />
     <Image Include="res\diary.bmp" />
     <Image Include="res\goods.ico" />
     <Image Include="res\hospital.ico" />
+    <Image Include="res\house.ico" />
+    <Image Include="res\icon1.ico" />
     <Image Include="res\lnm-fushengji.ico" />
     <Image Include="res\news.bmp" />
+    <Image Include="res\post.ico" />
     <Image Include="res\subway.bmp" />
+    <Image Include="res\wangba.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

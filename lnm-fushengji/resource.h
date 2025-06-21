@@ -26,6 +26,11 @@
 #define IDD_TOPLIST                     156
 #define IDD_BUY                         158
 #define IDD_SELL                        159
+#define IDI_BANK                        162
+#define IDI_HOUSE                       163
+#define IDI_POST                        164
+#define IDI_WANGBA                      165
+#define IDD_INTOP                       166
 #define IDC_LOAD                        1000
 #define IDC_BUTTON1                     1001
 #define IDC_TITLE                       1002
@@ -85,8 +90,10 @@
 #define IDC_ASK                         1047
 #define IDC_EDIT1                       1048
 #define IDC_COUNT                       1048
+#define IDC_NAME                        1048
 #define IDC_SPIN1                       1049
-#define IDC_MFCBUTTON1                  1050
+#define IDC_RICH                        1051
+#define IDC_RICH2                       1052
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -103,9 +110,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        161
+#define _APS_NEXT_RESOURCE_VALUE        168
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1051
+#define _APS_NEXT_CONTROL_VALUE         1052
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

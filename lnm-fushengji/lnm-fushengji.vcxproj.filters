@@ -75,6 +75,12 @@
     <ClInclude Include="SellDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="IconBtn.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Intop.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lnm-fushengji.cpp">
@@ -125,6 +131,12 @@
     <ClCompile Include="SellDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="IconBtn.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Intop.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="lnmfushengji.rc">
@@ -156,6 +168,21 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\goods.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bank.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\house.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\post.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\wangba.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

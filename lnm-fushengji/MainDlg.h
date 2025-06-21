@@ -1,8 +1,12 @@
 ﻿#pragma once
 #include "afxdialogex.h"
 
-#include <vector>
-
+struct TopEntry {
+	CString name;
+	long score;
+	int health;
+	int fame;
+};
 
 // MainDlg 对话框
 
@@ -49,6 +53,12 @@ protected:
 	void MainDlg::NextDay();
 	void MainDlg::EndGame();
 
+	static void LoadTopList(std::vector<TopEntry>& list);
+	static void SaveTopList(const std::vector<TopEntry>& list);
+	static int GetTopOrder(long score);
+	static void InsertTop(const TopEntry& entry);
+	static void ShowTopList(CWnd* pParent = nullptr);
+
 	int m_nVisitWangba = 0;
 	bool m_goStat = false;
 
@@ -73,6 +83,12 @@ protected:
 	CButton m_minHome;
 	CButton m_galaxy;
 	CButton m_file;
+
+	CIconBtn m_bank;
+	CIconBtn m_hosp;
+	CIconBtn m_post;
+	CIconBtn m_house;
+	CIconBtn m_wangba;
 
 private:
 	CFont m_fontBold;

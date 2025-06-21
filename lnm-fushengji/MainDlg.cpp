@@ -158,6 +158,12 @@ void MainDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_MINHOME, m_minHome);
 	DDX_Control(pDX, IDC_BUTTON_GALAXY, m_galaxy);
 	DDX_Control(pDX, IDC_BUTTON_FILE, m_file);
+
+	DDX_Control(pDX, IDC_BUTTON_BANK, m_bank);
+	DDX_Control(pDX, IDC_BUTTON_HOSP, m_hosp);
+	DDX_Control(pDX, IDC_BUTTON_POST, m_post);
+	DDX_Control(pDX, IDC_BUTTON_HOUSE, m_house);
+	DDX_Control(pDX, IDC_BUTTON_WANGBA, m_wangba);
 }
 
 BOOL MainDlg::OnInitDialog()
@@ -212,13 +218,13 @@ BOOL MainDlg::OnInitDialog()
     // 设置市场列表控件样式
     m_market.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
 
-    CRect rcMarket;
-    m_market.GetClientRect(&rcMarket);
-    int marketWidth = static_cast<int>(rcMarket.Width() * dpiScale);
+	CRect rcMarket;
+	m_market.GetClientRect(&rcMarket);
+	int marketWidth = rcMarket.Width();
 
-    // 动态调整黑市列表列宽
-    m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5)); // 商品列占50%
-    m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5)); // 黑市价格列占50%
+	// 动态调整黑市列表列宽
+	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, marketWidth / 2); // 商品列占50%
+	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, marketWidth - marketWidth / 2); // 黑市价格列占50%
 
     // 初始化黑市货品
     GenGoods();
@@ -226,14 +232,13 @@ BOOL MainDlg::OnInitDialog()
     // 设置出租屋列表控件样式
     m_coat.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | WS_HSCROLL);
 
-    CRect rcCoat;
-    m_coat.GetClientRect(&rcCoat);
-    int coatWidth = static_cast<int>(rcCoat.Width() * dpiScale);
+	CRect rcCoat;
+	m_coat.GetClientRect(&rcCoat);
+	int coatWidth = rcCoat.Width();
 
-    // 动态调整出租屋列表列宽
-    m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4)); // 商品列占40%
-    m_coat.InsertColumn(1, L"数量", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2)); // 数量列占20%
-    m_coat.InsertColumn(2, L"买进价格", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4)); // 买进价格列占40%
+	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, coatWidth * 2 / 5); // 40%
+	m_coat.InsertColumn(1, L"数量", LVCFMT_LEFT, coatWidth / 5);     // 20%
+	m_coat.InsertColumn(2, L"买进价格", LVCFMT_LEFT, coatWidth * 2 / 5); // 40%
 
     // 动态调整字体大小
     int dpiAdjustedFontHeight = GetDpiAdjustedFontHeight(28, this->GetSafeHwnd());
@@ -254,7 +259,7 @@ BOOL MainDlg::OnInitDialog()
     m_health.SetFont(&m_fontBold);
     m_fame.SetFont(&m_fontBold);
 
-    // 设置按钮的字体
+    // 设置按钮字体
     lf.lfHeight = GetDpiAdjustedFontHeight(16, this->GetSafeHwnd());
     lf.lfWeight = FW_NORMAL;
     wcscpy_s(lf.lfFaceName, L"Microsoft YaHei UI");
@@ -262,6 +267,19 @@ BOOL MainDlg::OnInitDialog()
 
     m_go.SetFont(&m_buttonFont);
     m_boss.SetFont(&m_buttonFont);
+
+	// 设置按钮图片
+	m_bank.ModifyStyle(0, BS_OWNERDRAW);
+	m_hosp.ModifyStyle(0, BS_OWNERDRAW);
+	m_post.ModifyStyle(0, BS_OWNERDRAW);
+	m_house.ModifyStyle(0, BS_OWNERDRAW);
+	m_wangba.ModifyStyle(0, BS_OWNERDRAW);
+
+	m_bank.SetIconText(AfxGetApp()->LoadIcon(IDI_BANK), L"银 行");
+	m_hosp.SetIconText(AfxGetApp()->LoadIcon(IDI_HOSPITAL), L"医 院");
+	m_post.SetIconText(AfxGetApp()->LoadIcon(IDI_POST), L"邮 局");
+	m_house.SetIconText(AfxGetApp()->LoadIcon(IDI_HOUSE), L"租房中介");
+	m_wangba.SetIconText(AfxGetApp()->LoadIcon(IDI_WANGBA), L"网 吧");
 
     // 设置每个控件的文本
     CString strCash;
@@ -576,6 +594,14 @@ void MainDlg::NextDay()
 		FlushDisplay();
 	}
 
+	if (debt > 100000)
+	{
+		DiaryDlg diary(nullptr, L"俺欠钱太多，村长叫一群老乡揍了俺一顿!");
+		diary.DoModal();
+		health -= 30;
+		FlushDisplay();
+	}
+
 	if (inBank > 0)
 	{
 		inBank *= 1.01;
@@ -584,6 +610,33 @@ void MainDlg::NextDay()
 
 	TriggerRandomEvents();
 
+	if (health < 85 && leftDay < 37 && health > 0) {
+		int delay_day = 1 + RandomNum(2);
+		CString msg1, msg2, msg3;
+		msg1.Format(L"好心的群友把你抬到医院，医生让你治疗%d天。", delay_day);
+		msg2 = L"由于不注意身体，你被人发现昏迷在地铁站附近。";
+		int load = delay_day * (1000 + RandomNum(8500));
+		msg3.Format(L"群主让人为你垫付了住院费用%d元。", load);
+
+		DiaryDlg dlg(nullptr, msg1 + L"\n" + msg2 + L"\n" + msg3);
+		dlg.DoModal();
+		debt += load;
+		health += 10;
+		if (health > 100) health = 100;
+		leftDay += delay_day; // 住院消耗天数
+		FlushDisplay();
+		return;
+	}
+	if (health < 20 && health > 0) {
+		DiaryDlg dlg(nullptr, L"你的健康……健康危机……快去医院……");
+		dlg.DoModal();
+	}
+	if (health <= 0) {
+		DiaryDlg dlg(nullptr, L"你倒在街头，身边日记本上写着：“牢黏猫窝，我将再来！”");
+		dlg.DoModal();
+		EndGame();
+	}
+
 	if (leftDay == 39)
 	{
 		DiaryDlg diary(nullptr, L"俺明天回家乡，快把全部货物卖掉。");
@@ -591,12 +644,148 @@ void MainDlg::NextDay()
 	}
 
 	if (leftDay >= 40) // 检查是否达到游戏结束条件
+	{
+		DiaryDlg diary(nullptr, L"俺已经在北京40天了，该回去结婚去了。");
+		diary.DoModal();
+
+		// 自动卖出剩余货物
+		if (m_coat.GetItemCount() > 0)
+		{
+			CString goods_left = L"系统替你卖了剩余货物：";
+			long total_earn = 0;
+			for (int i = 0; i < m_coat.GetItemCount(); ++i)
+			{
+				CString name = m_coat.GetItemText(i, 0);
+				CString cntStr = m_coat.GetItemText(i, 1);
+				int count = _wtoi(cntStr);
+				int price = 0;
+				// 查找黑市价格
+				for (int j = 0; j < m_market.GetItemCount(); ++j)
+				{
+					if (m_market.GetItemText(j, 0) == name)
+					{
+						price = _wtoi(m_market.GetItemText(j, 1));
+						break;
+					}
+				}
+				if (count > 0 && price > 0)
+				{
+					goods_left += name + L"×" + cntStr + L" ";
+					cash += count * price;
+					total_earn += count * price;
+				}
+			}
+			goods_left += L"。";
+			DiaryDlg dlg(nullptr, goods_left);
+			dlg.DoModal();
+			FlushDisplay();
+		}
+
 		EndGame();
+	}
 }
 
 void MainDlg::EndGame()
 {
+	// 计算分数
+	long score = cash + inBank - debt;
+	if (score > 0)
+	{
+		CString name = L"无名氏";
+		// 可弹窗输入姓名，简化为默认
+		int order = GetTopOrder(score);
+		if (order != 100) {
+			// 进入高手榜
+			CString msg;
+			msg.Format(L"恭喜进入高手榜第%d名！", order + 1);
+			MessageBox(msg, L"高手榜", MB_OK | MB_ICONINFORMATION);
+			TopEntry entry{ name, score, health, fame };
+			InsertTop(entry);
+		}
+		else {
+			CString msg;
+			msg.Format(L"您挣的钱%ld元太少，没能进入高手榜，下次努力哦!", score);
+			MessageBox(msg, L"高手榜", MB_OK | MB_ICONINFORMATION);
+		}
+		ShowTopList(this);
+	}
+	else
+	{
+		NewsDlg newsDlg(nullptr, L"《牢黏猫游戏报》报道: 玩家“无名氏”在牢黏猫窝没挣着钱，被遣送回家。");
+		newsDlg.DoModal();
+	}
 
+	int status = MessageBox(L"嗨，再玩一把吗？", L"游戏结束", MB_YESNO | MB_ICONINFORMATION);
+	if (status == IDYES)
+	{
+		OnNewgame(); // 重新开始游戏
+		return;
+	}
+	else if (status == IDNO)
+	{
+		EndDialog(IDOK);
+	}
+}
+
+void MainDlg::LoadTopList(std::vector<TopEntry>& list)
+{
+	list.clear();
+	std::ifstream fin("score.txt");
+	if (!fin.is_open()) return;
+	for (int i = 0; i < 10; ++i) {
+		std::string name, score, health, fame;
+		if (!std::getline(fin, name)) break;
+		if (!std::getline(fin, score)) break;
+		if (!std::getline(fin, health)) break;
+		if (!std::getline(fin, fame)) break;
+		TopEntry entry;
+		entry.name = CString(name.c_str());
+		entry.score = atol(score.c_str());
+		entry.health = atoi(health.c_str());
+		entry.fame = atoi(fame.c_str());
+		list.push_back(entry);
+	}
+	fin.close();
+}
+
+void MainDlg::SaveTopList(const std::vector<TopEntry>& list)
+{
+	std::ofstream fout("score.txt", std::ios::trunc);
+	for (const auto& entry : list) {
+		fout << CT2A(entry.name) << "\n"
+			<< entry.score << "\n"
+			<< entry.health << "\n"
+			<< entry.fame << "\n";
+	}
+	fout.close();
+}
+
+int MainDlg::GetTopOrder(long score)
+{
+	std::vector<TopEntry> list;
+	LoadTopList(list);
+	for (int i = 0; i < list.size(); ++i) {
+		if (score > list[i].score)
+			return i;
+	}
+	return (list.size() < 10) ? (int)list.size() : 100;
+}
+
+void MainDlg::InsertTop(const TopEntry& entry)
+{
+	std::vector<TopEntry> list;
+	LoadTopList(list);
+	int pos = GetTopOrder(entry.score);
+	if (pos == 100 && list.size() >= 10) return;
+	list.insert(list.begin() + pos, entry);
+	if (list.size() > 10) list.resize(10);
+	SaveTopList(list);
+}
+
+void MainDlg::ShowTopList(CWnd* pParent)
+{
+	TopDlg dlg(pParent);
+	dlg.DoModal();
 }
 
 // MainDlg 消息处理程序
