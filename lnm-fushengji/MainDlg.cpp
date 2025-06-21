@@ -32,24 +32,24 @@ namespace {
 }
 
 struct Message {
-	int freq;   // the frequency of the events 
-	char* msg;  // what message to display when event happen
-	int drug;  // goods ID to be influenced
-	int plus;  // price increased ( *)
-	int minus; //price decrease   ( /)
-	int add;   // how many goods to give user (+) 
+	int freq;   // 事件概率
+	char* msg;  // 事件消息
+	int drug;   // 被影响的物品ID
+	int plus;   // 涨价数量
+	int minus;  // 跌价数量
+	int add;    // 赠送物品数
 };
 
 struct BadEvent {
-	int freq;     // the frequency of this event
-	char* msg;    // the message to dispplay while event happen
-	int hunt;     // how many points user get hurted when event happen
+	int freq;   // 事件概率
+	char* msg;  // 事件消息
+	int hunt;   // 受伤点数
 };
 
 struct StealEvent {
-	int freq;  //the frequency of the event
-	char* msg; //the message to display when event happen
-	int ratoi;  // how many ratio decreased. money=money*(1-ratoi)
+	int freq;   // 事件概率
+	char* msg;  // 事件消息
+	int ratoi;  // 减少金额数目
 };
 
 Message gameMsgs[] = {
@@ -218,8 +218,8 @@ BOOL MainDlg::OnInitDialog()
 	m_market.GetClientRect(&rcMarket);
 	int marketWidth = static_cast<int>(rcMarket.Width() * dpiScale);
 
-	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5));
-	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.5));
+	m_market.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.25));
+	m_market.InsertColumn(1, L"黑市价格", LVCFMT_LEFT, static_cast<int>(marketWidth * 0.25));
 
 	// 初始化黑市货品
 	GenGoods();
@@ -231,14 +231,14 @@ BOOL MainDlg::OnInitDialog()
 	m_coat.GetClientRect(&rcCoat);
 	int coatWidth = static_cast<int>(rcCoat.Width() * dpiScale);
 
-	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4));
-	m_coat.InsertColumn(1, L"数量", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2));
-	m_coat.InsertColumn(2, L"买进价格", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.4));
+	m_coat.InsertColumn(0, L"商品", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2));
+	m_coat.InsertColumn(1, L"数量", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.1));
+	m_coat.InsertColumn(2, L"买进价格", LVCFMT_LEFT, static_cast<int>(coatWidth * 0.2));
 
 	// 动态调整字体大小
 	int dpiAdjustedFontHeight = GetDpiAdjustedFontHeight(28, this->GetSafeHwnd());
 
-	// 创建等宽字体（如 Consolas 或 Courier New）
+	// 创建等宽字体
 	LOGFONT lf = { 0 };
 	lf.lfHeight = dpiAdjustedFontHeight; // 根据 DPI 调整字体高度
 	lf.lfWeight = FW_BOLD;              // 粗体
@@ -497,7 +497,6 @@ void MainDlg::TriggerRandomEvents()
 			// 特殊事件：收2500元
 			if (i == msgCount - 1) {
 				debt += 2500;
-				msg += L"\n俺的债务增加了2500元。";
 			}
 
 			// 更新显示
@@ -518,7 +517,7 @@ void MainDlg::TriggerRandomEvents()
 			if (health < 0) health = 0;
 
 			// 附加健康减少说明
-			msg.AppendFormat(L"\n俺的健康减少了%d点。", events[i].hunt);
+			msg.AppendFormat(L"俺的健康减少了%d点。", events[i].hunt);
 
 			// 更新显示
 			FlushDisplay();
@@ -539,7 +538,7 @@ void MainDlg::TriggerRandomEvents()
 
 			// 附加现金减少说明
 			int lost = oldCash - cash;
-			msg.AppendFormat(L"\n俺的迷你币减少了%d元。", lost);
+			msg.AppendFormat(L"俺的迷你币减少了%d元。", lost);
 
 			// 更新显示
 			FlushDisplay();
@@ -795,6 +794,13 @@ void MainDlg::OnBnClickedButtonHouse()
 void MainDlg::OnBnClickedButtonWangba()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_nVisitWangba > 2)
+	{
+		DiaryDlg diary(nullptr, L"outice放出话来：你别总是在网吧里看片，快去做正经买卖!");
+		diary.DoModal();
+		return;
+	}
+
 	if (cash < 15)
 	{
 		DiaryDlg diary(nullptr, L"进网吧至少身上要带15迷你币，呵呵，取钱再来。");
@@ -813,6 +819,8 @@ void MainDlg::OnBnClickedButtonWangba()
 	msg.Format(L"感谢Graphic改革，可以免费看片! 还挣了91短视频广告费%d元，嘿嘿!", money);
 	DiaryDlg diary(nullptr, msg);
 	diary.DoModal();
+
+	m_nVisitWangba++;
 
 	FlushDisplay();
 }

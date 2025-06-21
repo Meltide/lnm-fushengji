@@ -49,6 +49,8 @@ protected:
 	void MainDlg::NextDay();
 	void MainDlg::EndGame();
 
+	int m_nVisitWangba = 0;
+
 	CStatic m_cash;
 	CStatic m_inBank;
 	CStatic m_debt;
