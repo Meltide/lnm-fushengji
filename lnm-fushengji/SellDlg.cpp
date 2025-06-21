@@ -159,7 +159,32 @@ void SellDlg::OnBnClickedOk()
 	m_main->total -= count;
 	m_main->m_coat.DeleteItem(m_main->m_coat.GetSelectionMark());
 
-	CDialogEx::OnOK();
+	EndDialog(IDOK);
+
+	if (m_goods == L"《outice艾草》（禁书）")
+	{
+		if (!badFame1)
+		{
+			badFame1 = true;
+			DiaryDlg diary(nullptr, L"买卖《outice艾草》（禁书），污染社会，俺的名声变坏了啊!");
+			diary.DoModal();
+		}
+
+		m_main->fame -= 7;
+		if (m_main->fame < 0) m_main->fame = 0;
+	}
+	if (m_goods == L"巧克力（剧毒！）")
+	{
+		if (!badFame2)
+		{
+			badFame2 = true;
+			DiaryDlg diary(nullptr, L"买卖巧克力（剧毒！），危害社会，俺的名声下降了。");
+			diary.DoModal();
+		}
+
+		m_main->fame -= 10;
+		if (m_main->fame < 0) m_main->fame = 0;
+	}
 }
 
 void SellDlg::OnBnClickedCancel()

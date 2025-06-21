@@ -86,6 +86,7 @@
 #define IDC_EDIT1                       1048
 #define IDC_COUNT                       1048
 #define IDC_SPIN1                       1049
+#define IDC_MFCBUTTON1                  1050
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -102,9 +103,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        160
+#define _APS_NEXT_RESOURCE_VALUE        161
 #define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1050
+#define _APS_NEXT_CONTROL_VALUE         1051
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

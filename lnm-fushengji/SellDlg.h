@@ -16,6 +16,9 @@ class SellDlg : public CDialogEx
 	int m_count;
 	int m_price;
 
+	bool badFame1 = false;
+	bool badFame2 = false;
+
 public:
 	SellDlg(CWnd* pParent = nullptr, MainDlg* main = nullptr);   // 标准构造函数
 	virtual ~SellDlg();

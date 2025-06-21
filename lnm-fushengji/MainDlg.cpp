@@ -145,6 +145,9 @@ void MainDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_MARKET, m_market);
 	DDX_Control(pDX, IDC_LIST_COAT, m_coat);
 
+	DDX_Control(pDX, IDC_BUTTON_GO, m_go);
+	DDX_Control(pDX, IDC_BUTTON_BOSS, m_boss);
+
 	DDX_Control(pDX, IDC_BUTTON_ICEHOME, m_iceHome);
 	DDX_Control(pDX, IDC_BUTTON_MCPECITY, m_mcpeCity);
 	DDX_Control(pDX, IDC_BUTTON_DANCITY, m_danCity);
@@ -241,7 +244,7 @@ BOOL MainDlg::OnInitDialog()
 	// 创建等宽字体
 	LOGFONT lf = { 0 };
 	lf.lfHeight = dpiAdjustedFontHeight; // 根据 DPI 调整字体高度
-	lf.lfWeight = FW_BOLD;              // 粗体
+	lf.lfWeight = FW_BOLD;               // 粗体
 	// 推荐 Consolas，若无则 Courier New
 	wcscpy_s(lf.lfFaceName, L"Consolas");
 	m_fontBold.DeleteObject();
@@ -253,6 +256,15 @@ BOOL MainDlg::OnInitDialog()
 	m_debt.SetFont(&m_fontBold);
 	m_health.SetFont(&m_fontBold);
 	m_fame.SetFont(&m_fontBold);
+
+	// 设置按钮的字体
+	lf.lfHeight = GetDpiAdjustedFontHeight(16, this->GetSafeHwnd());
+	lf.lfWeight = FW_NORMAL;
+	wcscpy_s(lf.lfFaceName, L"Microsoft YaHei UI");
+	m_buttonFont.CreateFontIndirect(&lf);
+
+	m_go.SetFont(&m_buttonFont);
+	m_boss.SetFont(&m_buttonFont);
 
 	// 设置每个控件的文本
 	CString strCash;
@@ -307,6 +319,7 @@ BEGIN_MESSAGE_MAP(MainDlg, CDialogEx)
 	ON_COMMAND(ID_32772, &MainDlg::OnTop)
 	ON_BN_CLICKED(IDC_BUTTON_BUY, &MainDlg::OnBnClickedButtonBuy)
 	ON_BN_CLICKED(IDC_BUTTON_SELL, &MainDlg::OnBnClickedButtonSell)
+	ON_BN_CLICKED(IDC_BUTTON_GO, &MainDlg::OnBnClickedButtonGo)
 END_MESSAGE_MAP()
 
 HBRUSH MainDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -825,11 +838,54 @@ void MainDlg::OnBnClickedButtonWangba()
 	FlushDisplay();
 }
 
+void MainDlg::OnBnClickedButtonGo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (m_goStat)
+	{
+		m_goStat = false;
+		SetDlgItemText(IDC_PLACEGROUP, L"牢黏猫窝地标示意图");
+		m_go.SetWindowText(L"我要单杀群友");
+		m_iceHome.SetWindowText(L"ice家");
+		m_mcpeCity.SetWindowText(L"MCPECity");
+		m_danCity.SetWindowText(L"淡城");
+		m_meltCity.SetWindowText(L"融城");
+		m_minCity.SetWindowText(L"MinCity");
+		m_furryCs.SetWindowText(L"福瑞超市");
+		m_code.SetWindowText(L"牢黏猫Code");
+		m_minHome.SetWindowText(L"min家");
+		m_galaxy.SetWindowText(L"Galaxy 2024");
+		m_file.SetWindowText(L"牢黏猫文件");
+	}
+	else
+	{
+		m_goStat = true;
+		SetDlgItemText(IDC_PLACEGROUP, L"群友IP示意图");
+		m_go.SetWindowText(L"我要逛地标");
+		m_iceHome.SetWindowText(L"台州");
+		m_mcpeCity.SetWindowText(L"厦门");
+		m_danCity.SetWindowText(L"淄博");
+		m_meltCity.SetWindowText(L"烟台");
+		m_minCity.SetWindowText(L"菏泽");
+		m_furryCs.SetWindowText(L"桂林");
+		m_code.SetWindowText(L"陕西");
+		m_minHome.SetWindowText(L"新余");
+		m_galaxy.SetWindowText(L"温州");
+		m_file.SetWindowText(L"天津");
+	}
+
+	// 将焦点设置到其他控件，避免显示焦点边框
+	GetDlgItem(IDC_STATIC)->SetFocus();
+}
+
 void MainDlg::OnBnClickedButtonBoss()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	BossComeDlg BossComeDlg;
 	BossComeDlg.DoModal();
+
+	// 将焦点设置到其他控件，避免显示焦点边框
+	GetDlgItem(IDC_STATIC)->SetFocus();
 }
 
 void MainDlg::OnBank()

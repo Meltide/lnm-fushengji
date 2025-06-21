@@ -50,6 +50,7 @@ protected:
 	void MainDlg::EndGame();
 
 	int m_nVisitWangba = 0;
+	bool m_goStat = false;
 
 	CStatic m_cash;
 	CStatic m_inBank;
@@ -58,6 +59,9 @@ protected:
 	CStatic m_fame;
 
 	CImageList m_imageList;
+
+	CMFCButton m_go;
+	CMFCButton m_boss;
 
 	CButton m_iceHome;
 	CButton m_mcpeCity;
@@ -72,6 +76,7 @@ protected:
 
 private:
 	CFont m_fontBold;
+	CFont m_buttonFont;
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -102,4 +107,5 @@ public:
 	afx_msg void OnTop();
 	afx_msg void OnBnClickedButtonBuy();
 	afx_msg void OnBnClickedButtonSell();
+	afx_msg void OnBnClickedButtonGo();
 };
