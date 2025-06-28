@@ -1,11 +1,35 @@
 ﻿#pragma once
 #include "afxdialogex.h"
 
-struct TopEntry {
-	CString name;
-	long score;
-	int health;
-	int fame;
+
+namespace {
+	// 只在程序启动时初始化一次随机种子
+	struct RandomSeedInit {
+		RandomSeedInit() { srand((unsigned)time(nullptr)); }
+	} _randomSeedInit;
+
+	int RandomNum(int upper) { return rand() % upper; }
+}
+
+struct Message {
+	int freq;   // 事件概率
+	char* msg;  // 事件消息
+	int drug;   // 被影响的物品ID
+	int plus;   // 涨价数量
+	int minus;  // 跌价数量
+	int add;    // 赠送物品数
+};
+
+struct BadEvent {
+	int freq;   // 事件概率
+	char* msg;  // 事件消息
+	int hunt;   // 受伤点数
+};
+
+struct StealEvent {
+	int freq;   // 事件概率
+	char* msg;  // 事件消息
+	int ratoi;  // 减少金额数目
 };
 
 // MainDlg 对话框
@@ -52,12 +76,6 @@ protected:
 	void MainDlg::TriggerRandomEvents();
 	void MainDlg::NextDay();
 	void MainDlg::EndGame();
-
-	static void LoadTopList(std::vector<TopEntry>& list);
-	static void SaveTopList(const std::vector<TopEntry>& list);
-	static int GetTopOrder(long score);
-	static void InsertTop(const TopEntry& entry);
-	static void ShowTopList(CWnd* pParent = nullptr);
 
 	int m_nVisitWangba = 0;
 	bool m_goStat = false;

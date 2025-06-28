@@ -65,10 +65,7 @@ BOOL TopDlg::OnInitDialog()
 		EndDialog(IDCANCEL);
 	}
 
-	std::string name;
-	std::string cash;
-	std::string health;
-	std::string fame;
+	std::string name, cash, health, fame;
 	std::vector<Member> list;
 
 	for (int i = 0; i < 10; i++)

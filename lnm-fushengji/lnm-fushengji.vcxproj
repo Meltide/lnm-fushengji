@@ -192,7 +192,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="HospitalDlg.h" />
     <ClInclude Include="IconBtn.h" />
-    <ClInclude Include="Intop.h" />
+    <ClInclude Include="IntopDlg.h" />
     <ClInclude Include="lnm-fushengji.h" />
     <ClInclude Include="lnm-fushengjiDlg.h" />
     <ClInclude Include="MainDlg.h" />
@@ -215,7 +215,7 @@
     <ClCompile Include="DiaryDlg.cpp" />
     <ClCompile Include="HospitalDlg.cpp" />
     <ClCompile Include="IconBtn.cpp" />
-    <ClCompile Include="Intop.cpp" />
+    <ClCompile Include="IntopDlg.cpp" />
     <ClCompile Include="lnm-fushengji.cpp" />
     <ClCompile Include="lnm-fushengjiDlg.cpp" />
     <ClCompile Include="MainDlg.cpp" />

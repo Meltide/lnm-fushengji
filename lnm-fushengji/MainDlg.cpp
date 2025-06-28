@@ -16,41 +16,12 @@
 #include "WangbaDlg.h"
 #include "DiaryDlg.h"
 #include "NewsDlg.h"
+#include "IntopDlg.h"
 #include "TopDlg.h"
 #include "BossComeDlg.h"
 #include "lnm-fushengjiDlg.h"
 #include "AboutDlg.h"
 
-
-namespace {
-	// 只在程序启动时初始化一次随机种子
-	struct RandomSeedInit {
-		RandomSeedInit() { srand((unsigned)time(nullptr)); }
-	} _randomSeedInit;
-
-	int RandomNum(int upper) { return rand() % upper; }
-}
-
-struct Message {
-	int freq;   // 事件概率
-	char* msg;  // 事件消息
-	int drug;   // 被影响的物品ID
-	int plus;   // 涨价数量
-	int minus;  // 跌价数量
-	int add;    // 赠送物品数
-};
-
-struct BadEvent {
-	int freq;   // 事件概率
-	char* msg;  // 事件消息
-	int hunt;   // 受伤点数
-};
-
-struct StealEvent {
-	int freq;   // 事件概率
-	char* msg;  // 事件消息
-	int ratoi;  // 减少金额数目
-};
 
 Message gameMsgs[] = {
 	{170, "砖家提议提高群友“强碱素质”，进口福瑞颇受欢迎!", 5, 2, 0, 0},
@@ -107,7 +78,7 @@ MainDlg::MainDlg(CWnd* pParent /*=nullptr*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-	cash = 2000;
+	cash = 200000;
 	inBank = 0;
 	debt = 5500;
 	health = 100;
@@ -691,23 +662,13 @@ void MainDlg::EndGame()
 	long score = cash + inBank - debt;
 	if (score > 0)
 	{
-		CString name = L"无名氏";
 		// 可弹窗输入姓名，简化为默认
-		int order = GetTopOrder(score);
+		IntopDlg inTop(nullptr, this);
+		int order = inTop.GetTopOrder(score);
 		if (order != 100) {
 			// 进入高手榜
-			CString msg;
-			msg.Format(L"恭喜进入高手榜第%d名！", order + 1);
-			MessageBox(msg, L"高手榜", MB_OK | MB_ICONINFORMATION);
-			TopEntry entry{ name, score, health, fame };
-			InsertTop(entry);
+			inTop.DoModal();
 		}
-		else {
-			CString msg;
-			msg.Format(L"您挣的钱%ld元太少，没能进入高手榜，下次努力哦!", score);
-			MessageBox(msg, L"高手榜", MB_OK | MB_ICONINFORMATION);
-		}
-		ShowTopList(this);
 	}
 	else
 	{
@@ -725,67 +686,6 @@ void MainDlg::EndGame()
 	{
 		EndDialog(IDOK);
 	}
-}
-
-void MainDlg::LoadTopList(std::vector<TopEntry>& list)
-{
-	list.clear();
-	std::ifstream fin("score.txt");
-	if (!fin.is_open()) return;
-	for (int i = 0; i < 10; ++i) {
-		std::string name, score, health, fame;
-		if (!std::getline(fin, name)) break;
-		if (!std::getline(fin, score)) break;
-		if (!std::getline(fin, health)) break;
-		if (!std::getline(fin, fame)) break;
-		TopEntry entry;
-		entry.name = CString(name.c_str());
-		entry.score = atol(score.c_str());
-		entry.health = atoi(health.c_str());
-		entry.fame = atoi(fame.c_str());
-		list.push_back(entry);
-	}
-	fin.close();
-}
-
-void MainDlg::SaveTopList(const std::vector<TopEntry>& list)
-{
-	std::ofstream fout("score.txt", std::ios::trunc);
-	for (const auto& entry : list) {
-		fout << CT2A(entry.name) << "\n"
-			<< entry.score << "\n"
-			<< entry.health << "\n"
-			<< entry.fame << "\n";
-	}
-	fout.close();
-}
-
-int MainDlg::GetTopOrder(long score)
-{
-	std::vector<TopEntry> list;
-	LoadTopList(list);
-	for (int i = 0; i < list.size(); ++i) {
-		if (score > list[i].score)
-			return i;
-	}
-	return (list.size() < 10) ? (int)list.size() : 100;
-}
-
-void MainDlg::InsertTop(const TopEntry& entry)
-{
-	std::vector<TopEntry> list;
-	LoadTopList(list);
-	int pos = GetTopOrder(entry.score);
-	if (pos == 100 && list.size() >= 10) return;
-	list.insert(list.begin() + pos, entry);
-	if (list.size() > 10) list.resize(10);
-	SaveTopList(list);
-}
-
-void MainDlg::ShowTopList(CWnd* pParent)
-{
-	TopDlg dlg(pParent);
-	dlg.DoModal();
 }
 
 // MainDlg 消息处理程序
